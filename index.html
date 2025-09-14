@@ -1,118 +1,207 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <title>Тест Яндекс.Метрики</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #74ABE2, #5563DE);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3C/g%3E%3C/svg%3E");
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 40px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      animation: fadeIn 1s ease;
-    }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    p {
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
-
-    button, a.vk-button {
-      display: inline-block;
-      padding: 12px 24px;
-      margin: 10px;
-      border: none;
-      border-radius: 30px;
-      background: #ff7eb3;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    button:hover, a.vk-button:hover {
-      background: #ff3f81;
-      transform: scale(1.05);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-
-  <!-- Код Яндекс.Метрики -->
-  <script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0];
-        k.async=1;k.src=r;a.parentNode.insertBefore(k,a)
-    })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-    ym(104145713, "init", {
-         clickmap:true,
-         trackLinks:true,
-         accurateTrackBounce:true,
-         webvisor:true
-    });
-  </script>
-  <noscript>
-    <div><img src="https://mc.yandex.ru/watch/104145713" style="position:absolute; left:-9999px;" alt="" /></div>
-  </noscript>
-  <!-- /Код Яндекс.Метрики -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Музыкальный тест: Miyagi — YouTube + локальный плеер</title>
+<style>
+  :root{--bg1:#1f2330;--bg2:#2b2f45;--accent:#ff7eb3}
+  body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#eaf0ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .app{width:100%;max-width:1000px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border-radius:16px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(6px)}
+  h1{margin:0 0 8px;font-size:20px}
+  p.small{margin:0 0 16px;color:#c9d1ff88}
+  .row{display:flex;gap:16px;flex-wrap:wrap}
+  .card{flex:1 1 320px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:12px}
+  label{display:block;font-size:13px;color:#cfe0ff88;margin-bottom:6px}
+  input[type=text], input[type=file], button, select {width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+  button{cursor:pointer;background:var(--accent);border:none;color:#111;font-weight:600}
+  .yt-player{aspect-ratio:16/9;width:100%;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+  .tracks{margin-top:10px;max-height:200px;overflow:auto}
+  .track{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px}
+  .track button{width:auto;padding:6px 10px;border-radius:8px;background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.06)}
+  .tiny{font-size:12px;color:#cfe0ff77}
+  .hint{font-size:12px;color:#cfe0ff66;margin-top:8px}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Тестовый сайт с Метрикой</h1>
-    <p>Здесь можно проверить цели и переходы.</p>
+  <div class="app">
+    <h1>Miyagi: YouTube-плейлист + локальный плеер</h1>
+    <p class="small">Вставь YouTube playlist id или video id — и откроется встроенный плеер. Ниже — локальный плеер (файлы хранятся в твоём браузере). Если хочешь загрузку на сервер — см. пример Node.js внизу.</p>
 
-    <!-- Кнопка для теста цели без подтверждения -->
-    <button onclick="ym(104145713, 'reachGoal', 'button_click');">
-      Тестовая кнопка
-    </button>
+    <div class="row">
+      <!-- YouTube card -->
+      <div class="card">
+        <label for="playlist">YouTube Playlist ID или Video ID</label>
+        <input id="playlist" type="text" placeholder="Вставь playlist ID, например PLxxxx или video id" />
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button id="loadPlaylist">Загрузить в плеер</button>
+          <button id="loadSearch">Загрузить по поиску "Miyagi" (быстро)</button>
+        </div>
+        <div style="margin-top:12px" class="yt-player" id="ytWrap">
+          <!-- iframe появится сюда -->
+          <iframe id="ytIframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <p class="hint">Как получить playlist ID? Обычно оно в URL после `list=`. Если нет — вставь любой video id, и плеер покажет один трек.</p>
+      </div>
 
-    <!-- Кнопка перехода на VK с отслеживанием -->
-    <a href="https://vk.com/klafonswat"
-       target="_blank"
-       class="vk-button"
-       onclick="ym(104145713, 'reachGoal', 'vk_click');">
-      Перейти в VK
-    </a>
+      <!-- Local player card -->
+      <div class="card">
+        <label for="audioUpload">Загрузить MP3 (локально в браузер)</label>
+        <input id="audioUpload" type="file" accept="audio/*" multiple />
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button id="saveFiles">Сохранить в локальное хранилище</button>
+          <button id="clearFiles" style="background:#ff6b6b">Очистить локальное хранилище</button>
+        </div>
+
+        <div class="tracks" id="tracksList" aria-live="polite" style="margin-top:12px"></div>
+
+        <audio id="player" controls style="width:100%;margin-top:12px;border-radius:8px;background:rgba(255,255,255,0.02)"></audio>
+        <p class="hint tiny">Файлы сохраняются в твоём браузере (IndexedDB). Они не уходят на сервер. Если хочешь загрузку на сервер — см. инструкцию внизу.</p>
+      </div>
+    </div>
   </div>
+
+<script>
+/* -----------------------
+   YouTube player logic
+   ----------------------- */
+const ytIframe = document.getElementById('ytIframe');
+document.getElementById('loadPlaylist').addEventListener('click', () => {
+  const id = document.getElementById('playlist').value.trim();
+  if(!id){ alert('Вставь playlist ID или video ID в поле.'); return; }
+  // если это playlist (начинается с PL или содержит "list="), предпочитаем listType=playlist
+  if(id.includes('list=') || id.toUpperCase().startsWith('PL') || id.toLowerCase().startsWith('rd') ){
+    // попытка очистить "list=" если пользователь вставил url
+    const list = id.includes('list=') ? (new URLSearchParams(id.split('?')[1]).get('list')||id) : id;
+    ytIframe.src = `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(list)}&rel=0&showinfo=0&iv_load_policy=3`;
+  } else {
+    // считаем что это video id
+    ytIframe.src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&showinfo=0`;
+  }
+});
+
+document.getElementById('loadSearch').addEventListener('click', () => {
+  // Быстрый способ: поиск Miyagi — откроет плейлист результатов поиска (YouTube не дает прямой embed поиска),
+  // поэтому подставим плейлист "uploads" канала или предложим вставить ID вручную.
+  // Мы сделаем fallback: подставим видео-ид по умолчанию (можешь заменить на любой).
+  const sampleVideo = 'dQw4w9WgXcQ'; // placeholder — замени на официальный клип Miyagi при желании
+  ytIframe.src = `https://www.youtube.com/embed/${sampleVideo}?rel=0&showinfo=0`;
+  alert('Автозагрузка: вставлен демонстрационный видео-id. Чтобы подставить реальный плейлист Miyagi, вставь playlist ID в поле сверху.');
+});
+
+/* --------------------------------
+   Local file storage (IndexedDB)
+   --------------------------------
+   Простая реализация: сохраняем файлы в IndexedDB под БД "localTracks", store "tracks".
+   Позволяет: сохранить файлы, показать список, проиграть выбранный.
+*/
+const dbName = 'localTracksDB_v1';
+let db;
+function openDB(){
+  return new Promise((res,rej)=>{
+    const req = indexedDB.open(dbName, 1);
+    req.onupgradeneeded = e => {
+      const idb = e.target.result;
+      if(!idb.objectStoreNames.contains('tracks')){
+        idb.createObjectStore('tracks', {keyPath: 'id', autoIncrement:true});
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; res(db); };
+    req.onerror = e => rej(e);
+  });
+}
+
+async function addFiles(files){
+  await openDB();
+  const tx = db.transaction('tracks','readwrite');
+  const store = tx.objectStore('tracks');
+  for(const f of files){
+    await new Promise((r,rej)=>{
+      const reader = new FileReader();
+      reader.onload = () => {
+        // сохраняем blob + мета
+        store.add({name: f.name, type: f.type, blob: new Blob([reader.result], {type: f.type}), date: Date.now()});
+        r();
+      };
+      reader.onerror = rej;
+      reader.readAsArrayBuffer(f);
+    });
+  }
+  await tx.complete;
+  await refreshList();
+}
+
+async function listTracks(){
+  await openDB();
+  return new Promise((res,rej)=>{
+    const tx = db.transaction('tracks','readonly');
+    const store = tx.objectStore('tracks');
+    const req = store.getAll();
+    req.onsuccess = e => res(e.target.result || []);
+    req.onerror = rej;
+  });
+}
+
+async function deleteAll(){
+  await openDB();
+  return new Promise((res,rej)=>{
+    const tx = db.transaction('tracks','readwrite');
+    const store = tx.objectStore('tracks');
+    const req = store.clear();
+    req.onsuccess = ()=>{ refreshList(); res(); };
+    req.onerror = rej;
+  });
+}
+
+async function refreshList(){
+  const list = await listTracks();
+  const container = document.getElementById('tracksList');
+  container.innerHTML = '';
+  if(list.length === 0){ container.innerHTML = '<div class="tiny">Треки не загружены.</div>'; return; }
+  list.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'track';
+    const left = document.createElement('div');
+    left.innerHTML = `<div style="font-weight:600">${escapeHtml(item.name)}</div><div class="tiny">${new Date(item.date).toLocaleString()}</div>`;
+    const right = document.createElement('div');
+    const playBtn = document.createElement('button');
+    playBtn.textContent = '▶ Играть';
+    playBtn.addEventListener('click', async () => {
+      // создаём objectURL и ставим в audio
+      const url = URL.createObjectURL(item.blob);
+      const player = document.getElementById('player');
+      player.src = url;
+      player.play().catch(()=>{});
+    });
+    right.appendChild(playBtn);
+    el.appendChild(left);
+    el.appendChild(right);
+    container.appendChild(el);
+  });
+}
+
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* UI wiring */
+document.getElementById('saveFiles').addEventListener('click', async ()=>{
+  const input = document.getElementById('audioUpload');
+  if(!input.files || input.files.length === 0){ alert('Выбери файлы для загрузки.'); return; }
+  await addFiles(input.files);
+  input.value = '';
+  alert('Файлы сохранены локально в браузере.');
+});
+
+document.getElementById('clearFiles').addEventListener('click', async ()=>{
+  if(!confirm('Очистить все локальные треки?')) return;
+  await deleteAll();
+  alert('Локальное хранилище очищено.');
+});
+
+/* On load */
+refreshList();
+
+/* Optional: load existing DB on start (no-op if empty) */
+openDB().then(refreshList).catch(()=>{console.warn('IndexedDB не доступен');});
+</script>
 </body>
 </html>
-
-
-
-
-
