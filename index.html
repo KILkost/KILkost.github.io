@@ -16,7 +16,6 @@
       overflow: hidden;
     }
 
-    /* узор поверх градиента */
     body::before {
       content: "";
       position: absolute;
@@ -97,8 +96,8 @@
     <h1>Тестовый сайт с Метрикой</h1>
     <p>Здесь можно проверить цели и переходы.</p>
 
-    <!-- Кнопка для теста цели -->
-    <button onclick="ym(104145713, 'reachGoal', 'button_click'); alert('Событие отправлено в Метрику!')">
+    <!-- Кнопка для теста цели без подтверждения -->
+    <button onclick="ym(104145713, 'reachGoal', 'button_click');">
       Тестовая кнопка
     </button>
 
@@ -112,6 +111,7 @@
   </div>
 </body>
 </html>
+
 
 
 
