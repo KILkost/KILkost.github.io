@@ -8,16 +8,17 @@
   :root{--bg1:#1f2330;--bg2:#2b2f45;--accent:#ff7eb3}
   body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#eaf0ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
   .app{width:100%;max-width:1000px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border-radius:16px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(6px)}
-  h2{margin:0 0 12px;font-size:18px}
+  h2{margin:0 0 8px;font-size:18px}
   .row{display:flex;gap:16px;flex-wrap:wrap}
   .card{flex:1 1 320px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:12px}
-  input[type=text], input[type=file], button {width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-  button{cursor:pointer;background:var(--accent);border:none;color:#111;font-weight:600}
-  .yt-player{aspect-ratio:16/9;width:100%;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+  input[type=text], input[type=file]{max-width:90%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:14px}
+  button{cursor:pointer;background:var(--accent);border:none;color:#111;font-weight:600;padding:8px 12px;border-radius:8px}
+  .yt-player{aspect-ratio:16/9;width:100%;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);margin-top:10px}
   .tracks{margin-top:10px;max-height:200px;overflow:auto}
-  .track{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px}
-  .track button{width:auto;padding:6px 10px;border-radius:8px;background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.06)}
+  .track{display:flex;align-items:center;justify-content:space-between;padding:6px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:6px}
+  .track button{width:auto;padding:4px 8px;border-radius:6px;background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.06)}
   .btns{display:flex;gap:12px;margin-top:16px}
+  .hint{font-size:12px;color:#cfcfcf;margin:6px 0}
 </style>
 </head>
 <body>
@@ -26,11 +27,10 @@
       <!-- YouTube card -->
       <div class="card">
         <h2>YouTube проигрыватель</h2>
-        <input id="playlist" type="text" placeholder="Вставь playlist ID или video ID" />
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <button id="loadPlaylist">Загрузить</button>
-        </div>
-        <div style="margin-top:12px" class="yt-player">
+        <input id="playlist" type="text" placeholder="Вставь ссылку или ID" />
+        <p class="hint">Можно вставить ссылку с <b>v=</b> (видео) или <b>list=</b> (плейлист), либо чистый ID.</p>
+        <button id="loadPlaylist">Загрузить</button>
+        <div class="yt-player">
           <iframe id="ytIframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
       </div>
@@ -39,12 +39,13 @@
       <div class="card">
         <h2>Проигрыватель</h2>
         <input id="audioUpload" type="file" accept="audio/*" multiple />
-        <div style="margin-top:8px;display:flex;gap:8px">
+        <p class="hint">Выбери mp3 с компьютера, они сохранятся в браузере.</p>
+        <div style="margin-top:6px;display:flex;gap:8px">
           <button id="saveFiles">Сохранить</button>
           <button id="clearFiles" style="background:#ff6b6b">Очистить</button>
         </div>
         <div class="tracks" id="tracksList"></div>
-        <audio id="player" controls style="width:100%;margin-top:12px;border-radius:8px;background:rgba(255,255,255,0.02)"></audio>
+        <audio id="player" controls style="width:100%;margin-top:10px;border-radius:8px;background:rgba(255,255,255,0.02)"></audio>
       </div>
     </div>
 
@@ -55,19 +56,37 @@
   </div>
 
 <script>
-/* YouTube */
+/* YouTube embed */
 const ytIframe = document.getElementById('ytIframe');
 document.getElementById('loadPlaylist').addEventListener('click', () => {
-  const id = document.getElementById('playlist').value.trim();
-  if(!id){ alert('Введите ID'); return; }
-  if(id.toUpperCase().startsWith('PL') || id.toLowerCase().startsWith('rd') ){
-    ytIframe.src = `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(id)}&rel=0&showinfo=0&iv_load_policy=3`;
+  let input = document.getElementById('playlist').value.trim();
+  if(!input){ alert('Введите ссылку или ID'); return; }
+
+  let url;
+  try { url = new URL(input); } catch { url = null; }
+
+  if(url){
+    const list = url.searchParams.get('list');
+    const video = url.searchParams.get('v');
+    if(list){
+      ytIframe.src = `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(list)}&rel=0`;
+      return;
+    }
+    if(video){
+      ytIframe.src = `https://www.youtube.com/embed/${encodeURIComponent(video)}?rel=0`;
+      return;
+    }
+  }
+
+  // если ввели чистый ID
+  if(input.toUpperCase().startsWith('PL')){
+    ytIframe.src = `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(input)}&rel=0`;
   } else {
-    ytIframe.src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&showinfo=0`;
+    ytIframe.src = `https://www.youtube.com/embed/${encodeURIComponent(input)}?rel=0`;
   }
 });
 
-/* Local IndexedDB */
+/* Local IndexedDB audio */
 const dbName = 'localTracksDB_v1'; let db;
 function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open(dbName,1);req.onupgradeneeded=e=>{const idb=e.target.result;if(!idb.objectStoreNames.contains('tracks'))idb.createObjectStore('tracks',{keyPath:'id',autoIncrement:true});};req.onsuccess=e=>{db=e.target.result;res(db);};req.onerror=rej;});}
 async function addFiles(files){await openDB();const tx=db.transaction('tracks','readwrite');const store=tx.objectStore('tracks');for(const f of files){await new Promise((r,rej)=>{const reader=new FileReader();reader.onload=()=>{store.add({name:f.name,type:f.type,blob:new Blob([reader.result],{type:f.type}),date:Date.now()});r();};reader.onerror=rej;reader.readAsArrayBuffer(f);});}await tx.complete;await refreshList();}
