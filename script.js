@@ -5,14 +5,6 @@ editable.addEventListener('input', () => {
   localStorage.setItem('editableText', editable.innerHTML);
 });
 
-/* === Переключение плееров === */
-function togglePlayers() {
-  const box = document.getElementById('players');
-  const arrow = document.getElementById('arrow');
-  box.classList.toggle('open');
-  arrow.textContent = box.classList.contains('open') ? '▲' : '▼';
-}
-
 /* === YouTube embed === */
 const ytIframe = document.getElementById('ytIframe');
 document.getElementById('loadPlaylist').addEventListener('click', () => {
