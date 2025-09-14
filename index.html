@@ -1,37 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Сайт без чебупелей</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="top-panel">
-    <button onclick="alert('Тест работает!')">Тест</button>
-    <a href="https://vk.com/klafonswat" target="_blank">Мой ВК</a>
-  </div>
-
-  <div id="editable" class="editable" contenteditable="true">
-    Этот текст можно редактировать прямо здесь.
-  </div>
-
-  <div id="players" class="players">
-    <div class="yt-player">
-      <label>Введите ID или ссылку на YouTube плейлист/видео:</label>
-      <input id="playlist" type="text" placeholder="например PL12345 или ссылка">
-      <button id="loadPlaylist">Загрузить</button>
-      <iframe id="ytIframe" width="300" height="200" frameborder="0" allowfullscreen></iframe>
-    </div>
-    <div class="local-player">
-      <label>Выберите MP3 файлы:</label>
-      <input id="audioUpload" type="file" multiple accept="audio/*">
-      <button id="saveFiles">Сохранить</button>
-      <button id="clearFiles">Очистить</button>
-      <div id="tracksList"></div>
-      <audio id="player" controls></audio>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button id="testBtn" type="button">Тест</button>
+      <a class="vk-btn" href="https://vk.com/klafonswat" target="_blank" rel="noopener">VK</a>
     </div>
   </div>
+
+  <main class="center">
+    <div id="editable" class="editable" contenteditable="true" aria-label="Редактируемый текст">
+      Здесь можно изменить текст. Содержимое сохраняется автоматически.
+    </div>
+  </main>
+
+  <aside id="players" class="players">
+    <div class="players-header" onclick="togglePlayers()" role="button" aria-expanded="false">
+      <span>🎵 Проигрыватели</span><span id="arrow">▼</span>
+    </div>
+    <div class="players-body" id="playersBody" aria-hidden="true">
+      <section class="yt-section">
+        <label for="playlist" class="label">YouTube (ссылка или ID)</label>
+        <input id="playlist" type="text" placeholder="вставь ссылку или ID" />
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button id="loadPlaylist" class="small">Загрузить</button>
+        </div>
+        <div class="yt-wrap" aria-hidden="false">
+          <iframe id="ytIframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </section>
+
+      <section class="local-section">
+        <label class="label">Локальные MP3</label>
+        <input id="audioUpload" type="file" accept="audio/*" multiple />
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button id="saveFiles" class="small">Сохранить</button>
+          <button id="clearFiles" class="small danger">Очистить</button>
+        </div>
+        <div class="tracks" id="tracksList" aria-live="polite"></div>
+        <audio id="player" controls></audio>
+      </section>
+    </div>
+  </aside>
 
   <script src="script.js"></script>
 </body>
