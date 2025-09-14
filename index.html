@@ -1,102 +1,50 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Музыкальный сайт</title>
-<style>
-  :root{--bg1:#1f2330;--bg2:#2b2f45;--accent:#ff7eb3}
-  body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#eaf0ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-  .app{width:100%;max-width:1000px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border-radius:16px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(6px)}
-  h2{margin:0 0 8px;font-size:18px}
-  .row{display:flex;gap:16px;flex-wrap:wrap}
-  .card{flex:1 1 320px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:12px}
-  input[type=text], input[type=file]{max-width:90%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:14px}
-  button{cursor:pointer;background:var(--accent);border:none;color:#111;font-weight:600;padding:8px 12px;border-radius:8px}
-  .yt-player{aspect-ratio:16/9;width:100%;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);margin-top:10px}
-  .tracks{margin-top:10px;max-height:200px;overflow:auto}
-  .track{display:flex;align-items:center;justify-content:space-between;padding:6px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:6px}
-  .track button{width:auto;padding:4px 8px;border-radius:6px;background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.06)}
-  .btns{display:flex;gap:12px;margin-top:16px}
-  .hint{font-size:12px;color:#cfcfcf;margin:6px 0}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Сайт без чебупелей</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
-    <div class="row">
-      <!-- YouTube card -->
-      <div class="card">
-        <h2>YouTube проигрыватель</h2>
-        <input id="playlist" type="text" placeholder="Вставь ссылку или ID" />
-        <p class="hint">Можно вставить ссылку с <b>v=</b> (видео) или <b>list=</b> (плейлист), либо чистый ID.</p>
-        <button id="loadPlaylist">Загрузить</button>
-        <div class="yt-player">
-          <iframe id="ytIframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-      </div>
+  <div class="topbar">
+    <button onclick="console.log('Тестовая кнопка')">Тест</button>
+    <button onclick="window.open('https://vk.com/klafonswat','_blank')">VK</button>
+  </div>
 
-      <!-- Local player card -->
-      <div class="card">
-        <h2>Проигрыватель</h2>
-        <input id="audioUpload" type="file" accept="audio/*" multiple />
-        <p class="hint">Выбери mp3 с компьютера, они сохранятся в браузере.</p>
-        <div style="margin-top:6px;display:flex;gap:8px">
-          <button id="saveFiles">Сохранить</button>
-          <button id="clearFiles" style="background:#ff6b6b">Очистить</button>
-        </div>
-        <div class="tracks" id="tracksList"></div>
-        <audio id="player" controls style="width:100%;margin-top:10px;border-radius:8px;background:rgba(255,255,255,0.02)"></audio>
-      </div>
-    </div>
-
-    <div class="btns">
-      <button onclick="alert('Тест работает!')">Тест</button>
-      <button onclick="window.open('https://vk.com/klafonswat','_blank')">Перейти в VK</button>
+  <div class="center">
+    <div class="editable" id="editable" contenteditable="true">
+      Здесь можно написать любой текст прямо на сайте. Кликни и меняй.
     </div>
   </div>
 
-<script>
-/* YouTube embed */
-const ytIframe = document.getElementById('ytIframe');
-document.getElementById('loadPlaylist').addEventListener('click', () => {
-  let input = document.getElementById('playlist').value.trim();
-  if(!input){ alert('Введите ссылку или ID'); return; }
+  <div class="players" id="players">
+    <header onclick="togglePlayers()">
+      🎵 Проигрыватели <span id="arrow">▼</span>
+    </header>
+    <div class="content">
+      <!-- YouTube -->
+      <h3>YouTube</h3>
+      <input id="playlist" type="text" placeholder="Ссылка или ID">
+      <p class="hint">Поддерживаются v= и list=</p>
+      <button class="small" id="loadPlaylist">Загрузить</button>
+      <div class="yt-player">
+        <iframe id="ytIframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
 
-  let url;
-  try { url = new URL(input); } catch { url = null; }
+      <!-- Local audio -->
+      <h3>MP3</h3>
+      <input id="audioUpload" type="file" accept="audio/*" multiple>
+      <div style="display:flex;gap:6px">
+        <button class="small" id="saveFiles">Сохранить</button>
+        <button class="small" id="clearFiles" style="background:#ff6b6b;color:white">Очистить</button>
+      </div>
+      <div class="tracks" id="tracksList"></div>
+      <audio id="player" controls></audio>
+    </div>
+  </div>
 
-  if(url){
-    const list = url.searchParams.get('list');
-    const video = url.searchParams.get('v');
-    if(list){
-      ytIframe.src = `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(list)}&rel=0`;
-      return;
-    }
-    if(video){
-      ytIframe.src = `https://www.youtube.com/embed/${encodeURIComponent(video)}?rel=0`;
-      return;
-    }
-  }
-
-  // если ввели чистый ID
-  if(input.toUpperCase().startsWith('PL')){
-    ytIframe.src = `https://www.youtube.com/embed?listType=playlist&list=${encodeURIComponent(input)}&rel=0`;
-  } else {
-    ytIframe.src = `https://www.youtube.com/embed/${encodeURIComponent(input)}?rel=0`;
-  }
-});
-
-/* Local IndexedDB audio */
-const dbName = 'localTracksDB_v1'; let db;
-function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open(dbName,1);req.onupgradeneeded=e=>{const idb=e.target.result;if(!idb.objectStoreNames.contains('tracks'))idb.createObjectStore('tracks',{keyPath:'id',autoIncrement:true});};req.onsuccess=e=>{db=e.target.result;res(db);};req.onerror=rej;});}
-async function addFiles(files){await openDB();const tx=db.transaction('tracks','readwrite');const store=tx.objectStore('tracks');for(const f of files){await new Promise((r,rej)=>{const reader=new FileReader();reader.onload=()=>{store.add({name:f.name,type:f.type,blob:new Blob([reader.result],{type:f.type}),date:Date.now()});r();};reader.onerror=rej;reader.readAsArrayBuffer(f);});}await tx.complete;await refreshList();}
-async function listTracks(){await openDB();return new Promise((res,rej)=>{const tx=db.transaction('tracks','readonly');const store=tx.objectStore('tracks');const req=store.getAll();req.onsuccess=e=>res(e.target.result||[]);req.onerror=rej;});}
-async function deleteAll(){await openDB();return new Promise((res,rej)=>{const tx=db.transaction('tracks','readwrite');const store=tx.objectStore('tracks');const req=store.clear();req.onsuccess=()=>{refreshList();res();};req.onerror=rej;});}
-async function refreshList(){const list=await listTracks();const container=document.getElementById('tracksList');container.innerHTML='';if(list.length===0){container.innerHTML='<div style="font-size:12px;color:#ccc">Нет треков</div>';return;}list.forEach(item=>{const el=document.createElement('div');el.className='track';const left=document.createElement('div');left.innerHTML=`<div style="font-weight:600">${escapeHtml(item.name)}</div>`;const right=document.createElement('div');const playBtn=document.createElement('button');playBtn.textContent='▶';playBtn.addEventListener('click',()=>{const url=URL.createObjectURL(item.blob);const player=document.getElementById('player');player.src=url;player.play().catch(()=>{});});right.appendChild(playBtn);el.appendChild(left);el.appendChild(right);container.appendChild(el);});}
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-document.getElementById('saveFiles').addEventListener('click',async()=>{const input=document.getElementById('audioUpload');if(!input.files||input.files.length===0){alert('Выбери файлы');return;}await addFiles(input.files);input.value='';});
-document.getElementById('clearFiles').addEventListener('click',async()=>{await deleteAll();});
-refreshList();
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
