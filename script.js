@@ -1,8 +1,3 @@
-/* === Случайный фон (синие узоры) === */
-function randomBlue() {
-  const shades=['#0d1b2a','#1b263b','#274c77','#4169e1','#2a6f97','#3a86ff','#14213d'];
-  return shades[Math.floor(Math.random()*shades.length)];
-}
 function makePattern() {
   let svg='<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">';
   for(let i=0;i<50;i++) {
